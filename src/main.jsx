@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, View, ViewComponent, StyleSheet, FlatList, SafeAreaView, ScrollView, Button, KeyboardAvoidingView, Platform, TextInput } from 'react-native';
-
+import { Text, View, ViewComponent, StyleSheet, FlatList, SafeAreaView, ScrollView, Button, KeyboardAvoidingView, Platform, TextInput,Image, TouchableHighlight } from 'react-native';
+import Search from './search';
+import styles from './styles';
+import NoneFavorite from '../public/favorite-svgrepo-com.png';
 const Main = () => {
     const [cryptoData, setCryptoData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
+    const [favorite, setFavorite] = useState([]);
     const [page, setPage] = useState(10);
     const [search, setSearch] = useState('');
     const dataMarkets = useCallback(async () => {
@@ -24,6 +27,10 @@ const Main = () => {
         setFilteredData(filteredData);
         console.log(filteredData);
     }
+
+    const favoriteSet = (element) => {
+        
+    }
     useEffect(() => {
         dataMarkets();
 
@@ -33,16 +40,14 @@ const Main = () => {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.container}
         >
-            <View style={styles.containerSearch}>
-                <Text style={styles.header}>Cryptos</Text>
-                <TextInput placeholder="Username" style={styles.textInput} onChangeText={onChangeSearch}  value={search}/>
-            </View>
+          <Search search={search} onChangeSearch={onChangeSearch} />
             <SafeAreaView style={styles.container}>
 
                 <ScrollView style={styles.ScrollView}>
 
                     {search.length> 2? filteredData.map((element, index) => (
                         <CryptoItem key={index} element={element} />
+                        
                         )):elementosAMostrar.map((element, index) => (
                             <CryptoItem key={index} element={element} />
                         ))}
@@ -54,80 +59,30 @@ const Main = () => {
     );
 };
 
-
+const Favorite = ({ element }) => (
+    <View style={styles.favorite}
+    >
+    <TouchableHighlight
+  activeOpacity={0.6}
+  underlayColor="#DDDDDD"
+  onPress={() => alert('Pressed!')}>
+   
+     <Image source={NoneFavorite} style={styles.img}/>
+   
+    </TouchableHighlight>
+    </View>
+);
 const CryptoItem = ({ element }) => (
+    <View style={styles.item}>
     <View style={styles.item}>
         <Text style={styles.Label}>{element.Label}</Text>
         <Text style={styles.Name}>{element.Name}</Text>
         <Text style={styles.Price}>{element.Price}</Text>
     </View>
+    <Favorite element={element} />
+    </View>
 );
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'black',
-        marginTop: 0,
-        marginBottom: 3,
-    },
-    ScrollView: {
-        flex: 2,
-        backgroundColor: 'white',
-        borderRadius: 8,
-        marginTop: 10,
-        padding: 15,
-        marginBottom: 3,
 
-    },
-    containerSearch: {
-        marginTop: 40,
-        backgroundColor: 'black',
-
-        padding: 15,
-    },
-    item: {
-        backgroundColor: '#C1C1C1',
-        padding: 8,
-        marginVertical: 4,
-        marginHorizontal: 5,
-        borderRadius: 8,
-        display: 'flex',
-        flexDirection: 'center',
-
-        alignItems: 'center',
-    },
-    Label: {
-        fontSize: 20,
-        margin: 5,
-        fontWeight: 'bold',
-        color: 'grey',
-
-    },
-    Name: {
-        margin: 5,
-        fontSize: 15,
-        fontWeight: 'bold',
-
-    },
-    Price: {
-        margin: 5,
-        color: 'green',
-
-    },
-    textInput: {
-        height: 40,
-        color: 'white',
-        borderColor: '#c0c0c0',
-        borderBottomWidth: 1,
-        marginTop: 10,
-    },
-    header: {
-        fontSize: 30,
-        color: 'white',
-        textAlign: 'center',
-        fontWeight: 'bold',
-
-    },
-});
 
 export default Main;

@@ -13,13 +13,13 @@ const Main = () => {
     const [page, setPage] = useState(10);
     const [search, setSearch] = useState('');
 
-    const dataMarkets = useCallback(async () => {
+    const dataMarkets = async () => {
         const response = await fetch('https://www.worldcoinindex.com/apiservice/v2getmarkets?key=skfp3FBOBLiyyZxhTFnLGWQTvSqdW4d8NpN&fiat=usd');
         const data = await response.json();
         await data.Markets.forEach(element => {
             setCryptoData(element)
         });
-    }, []);
+    };
 
     // Función para recuperar datos de AsyncStorage
     const retrieveData = async () => {
@@ -94,7 +94,7 @@ const Main = () => {
     useEffect(() => {
       dataMarkets();
         retrieveData();
-        const interval = setInterval(dataMarkets, 60000);
+        const interval = setInterval(dataMarkets, 70000);
 
     return () => clearInterval(interval);
 
@@ -109,7 +109,7 @@ const Main = () => {
 
                 <ScrollView style={styles.ScrollView}>
                     {favorite && favorite.map((element, index) => (
-                        <CryptoItem key={index} element={element} />
+                        <CryptoItem key={index} element={ cryptoData.find(crypto => crypto.Label === element.Label) } />                        
                     ))}
 
                     {search.length > 2 ? filteredData.map((element, index) => (
